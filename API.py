@@ -8,6 +8,7 @@ class Position:
     def __init__(self, position_json):
         self.x = position_json["x"]
         self.y = position_json["y"]
+
 # Class for a Unit Object
 class Unit:
     # A unit will have the following fields
@@ -19,6 +20,7 @@ class Unit:
         self.id = unit_json["id"]
         self.player_id = unit_json["playerNum"]
         self.pos = Position(unit_json["pos"])
+
 # Class for a Tile Object
 class Tile:
     # A Tile will have an id, hp, and type where type is either 'BLANK', 'DESTRUCTIBLE', or 'INDESTRUCTIBLe'
@@ -47,13 +49,16 @@ class Game:
     def get_setup(self):
         raise NotImplementedError(
             "Please Implement this method in a \"Strategy\" class")
+
     def do_turn(self):
         raise NotImplementedError(
             "Please Implement this method in a \"Strategy\" class")
+
 	# Implement this in the "Strategy" class if you want to do something specific
 	# when a game ends
     def game_over(self, result):
         pass
+
     # updates the game json. Called every turn
     def update_game(self, game_json):
         self.game = game_json

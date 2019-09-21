@@ -19,7 +19,7 @@ class Strategy(Game):
         If player_id is 1, UnitIds for the bots should be 1,2,3. If player_id is 2, UnitIds should be 4,5,6
     """
     def get_setup(self):
-        self.turn = 0
+        self.turnsTaken = 0
         units = []
         # if you are player1, unitIds will be 1,2,3. If you are player2, they will be 4,5,6
 
@@ -126,8 +126,8 @@ class Strategy(Game):
                 "priority": The bots move one at a time, so give the priority which you want them to act in (1,2, or 3)
     """
     def do_turn(self):
-        self.turn += 1
-        print(f'\nTURN {self.turn}\n', file=sys.stderr)
+        self.turnsTaken += 1
+        print(f'\nTURN {self.turnsTaken}\n', file=sys.stderr)
         self.taken_spots = list()
         for i in range(12):
             for j in range(12):
@@ -211,9 +211,10 @@ class Strategy(Game):
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit,
-                                        Position({"x": unit.pos.x, "y": unit.pos.y}) if self.turn == 1 else Position(
+                                        Position({"x": unit.pos.x, "y": unit.pos.y}) if self.turnsTaken == 1 else Position(
                                             {"x": 5, "y": 5}))
-        print(backup, file=sys.stderr)
+        if backup is None:
+            backup = (unit.pos.x, unit.pos.y)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
                                 (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
                                     backup[0], backup[1]),
@@ -249,7 +250,8 @@ class Strategy(Game):
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
-        print(backup, file=sys.stderr)
+        if backup is None:
+            backup = (unit.pos.x, unit.pos.y)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
                                 (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
                                     backup[0], backup[1]),
@@ -285,7 +287,8 @@ class Strategy(Game):
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
-        print(backup, file=sys.stderr)
+        if backup is None:
+            backup = (unit.pos.x, unit.pos.y)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
                                 (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
                                     backup[0], backup[1]),
