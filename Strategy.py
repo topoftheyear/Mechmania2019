@@ -1,6 +1,6 @@
 import sys
 import random
-from API import Game
+from API import Game, Position
 
 
 class Strategy(Game):
@@ -120,6 +120,16 @@ class Strategy(Game):
     """
     def do_turn(self):
         self.taken_spots = list()
+        for i in range(12):
+            for j in range(12):
+                checked_tile = self.get_tile((i, j))
+                if checked_tile.type == 'DESTRUCTIBLE':
+                    self.taken_spots.append((i, j))
+        for unit in self.get_my_units():
+            self.taken_spots.append((unit.pos.x, unit.pos.y))
+
+        print('taken_spots:' + str(self.taken_spots), file=sys.stderr)
+
         my_units = self.get_my_units()
         decision = []
 
@@ -133,6 +143,7 @@ class Strategy(Game):
                 decision.append(self.unit_three_actions(unit))
 
         print(decision, file=sys.stderr)
+        print('taken_spots after apply_route: ' + str(self.taken_spots), file=sys.stderr)
         return decision
 
     #MOVE THIS GUY LAST
@@ -152,8 +163,15 @@ class Strategy(Game):
                 results["attack"] = key
                 break
 
-        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6), self.taken_spots)
-        results["movement"] = self.clamp_movement(unit, to_enemy)
+        nearest_point = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
+        print('nearest_point: ' + str(nearest_point), file=sys.stderr)
+        to_enemy = self.path_to((unit.pos.x, unit.pos.y),
+                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (0, 0),
+                                self.taken_spots)
+        to_enemy = self.clamp_movement(unit, to_enemy)
+        results["movement"] = to_enemy
+        end_x, end_y = self.apply_route(unit, to_enemy)
+        self.taken_spots.append((end_x, end_y))
 
         return results
 
@@ -173,8 +191,15 @@ class Strategy(Game):
                 results["attack"] = key
                 break
 
-        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6), self.taken_spots)
-        results["movement"] = self.clamp_movement(unit, to_enemy)
+        nearest_point = self.get_nearest_point(unit, Position({"x": 11, "y": 11}))
+        print('nearest_point: ' + str(nearest_point), file=sys.stderr)
+        to_enemy = self.path_to((unit.pos.x, unit.pos.y),
+                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (0, 0),
+                                self.taken_spots)
+        to_enemy = self.clamp_movement(unit, to_enemy)
+        results["movement"] = to_enemy
+        end_x, end_y = self.apply_route(unit, to_enemy)
+        self.taken_spots.append((end_x, end_y))
 
         return results
 
@@ -194,8 +219,15 @@ class Strategy(Game):
                 results["attack"] = key
                 break
 
-        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6), self.taken_spots)
-        results["movement"] = self.clamp_movement(unit, to_enemy)
+        nearest_point = self.get_nearest_point(unit, Position({"x": 0, "y": 0}))
+        print('nearest_point: ' + str(nearest_point), file=sys.stderr)
+        to_enemy = self.path_to((unit.pos.x, unit.pos.y),
+                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (0, 0),
+                                self.taken_spots)
+        to_enemy = self.clamp_movement(unit, to_enemy)
+        results["movement"] = to_enemy
+        end_x, end_y = self.apply_route(unit, to_enemy)
+        self.taken_spots.append((end_x, end_y))
 
         return results
 
@@ -234,3 +266,36 @@ class Strategy(Game):
 
     def closest_spot_around(self, enemy_unit):
         pass
+
+    def apply_route(self, unit, directions=None):
+        unit_x = unit.pos.x
+        unit_y = unit.pos.y
+        if directions is None:
+            return unit_x, unit_y
+        for i in directions:
+            if i == "UP":
+                unit_y += 1
+            elif i == "DOWN":
+                unit_y -= 1
+            elif i == "LEFT":
+                unit_x -= 1
+            elif i == "RIGHT":
+                unit_x += 1
+            unit_y = self.clamp(unit_y, 0, 11)
+            unit_x = self.clamp(unit_x, 0, 11)
+        return unit_x, unit_y
+
+    def clamp(self, number, mini, maxi):
+        return min(maxi, max(mini, number))
+
+    def get_nearest_point(self, unit, position):
+        for n in range(12):
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x+n, position.y), self.taken_spots) is not None:
+                return [position.x+n, position.y]
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x-n, position.y), self.taken_spots) is not None:
+                return [position.x-n, position.y]
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x, position.y+n), self.taken_spots) is not None:
+                return [position.x, position.y+n]
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x, position.y-n), self.taken_spots) is not None:
+                return [position.x, position.y-n]
+        return None
