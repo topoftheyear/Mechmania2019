@@ -164,3 +164,24 @@ class Strategy(Game):
                 "unitId": 3 if self.player_id == 1 else 6
                 }
         return results
+
+    def recon(self, unit_id):
+        report = {"UP": None, "DOWN": None, "LEFT": None, "RIGHT": None}
+        for direction in report.keys():
+            hit_locations = self.get_positions_of_attack_pattern(unit_id, direction)
+            f,e = 0
+            for unit in self.get_my_units():
+                for loc in hit_locations:
+                    if self.check_same_position(unit, loc):
+                        f +=1
+            for unit in self.get_enemy_units():
+                for loc in hit_locations:
+                    if self.check_same_position(unit, loc):
+                        e +=1
+            report[direction] = [f, e]
+        return report
+
+    def check_same_position(pos1, pos2):
+        if pos1.x == pos2.x and pos1.y == pos2.y:
+            return True
+        return False
