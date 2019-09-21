@@ -94,9 +94,9 @@ class Strategy(Game):
         # creation of 2d lists
         unit3["attackPattern"] = [
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 2, 1, 0, 0],
+            [0, 1, 1, 2, 1, 1, 0],
+            [1, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
@@ -188,7 +188,8 @@ class Strategy(Game):
 
     # Move last
     def unit_one_move(self, unit):
-        target = self.get_enemy_units()[0]
+        target = self.get_target()
+        print(f'1: {target}', file=sys.stderr)
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit,
@@ -226,7 +227,8 @@ class Strategy(Game):
                 entry["attack"] = att
 
     def unit_two_move(self, unit):
-        target = self.get_enemy_units()[0]
+        target = self.get_target()
+        print(f'2: {target}', file=sys.stderr)
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
@@ -262,7 +264,8 @@ class Strategy(Game):
                 entry["attack"] = att
 
     def unit_three_move(self, unit):
-        target = self.get_enemy_units()[0]
+        target = self.get_target()
+        print(f'3: {target}', file=sys.stderr)
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
@@ -306,8 +309,16 @@ class Strategy(Game):
             directions = directions[:unit.speed]
         return directions
 
+    def get_target(self):
+        ids = [2, 3, 1, 5, 6, 4]
+        for enemy in self.get_enemy_units():
+            for eyedee in ids:
+                if enemy.id == eyedee:
+                    return enemy
+
     def recon(self, unit_id, future=False):
         report = {"UP": None, "DOWN": None, "LEFT": None, "RIGHT": None}
+        unfucker = {"UP": "RIGHT", "DOWN": "LEFT", "LEFT": "UP", "RIGHT": "DOWN"}
         for direction in report.keys():
             hit_locations = self.get_positions_of_attack_pattern(unit_id, direction)
             f, e, r = 0, 0, 0
@@ -334,6 +345,7 @@ class Strategy(Game):
                 if self.get_tile((new_location_with_shit.x, new_location_with_shit.y)).type == "DESTRUCTIBLE":
                     r += 1
 
+            direction = unfucker[direction]
             report[direction] = [f, e, r]
             print(direction + " " + str(report[direction]), file=sys.stderr)
         return report
