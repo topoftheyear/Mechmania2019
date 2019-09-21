@@ -1,12 +1,13 @@
 from queue import Queue
 import copy
+import sys
+
 # class for Position Object
 class Position:
     # A position will have an x and y coordinate
     def __init__(self, position_json):
         self.x = position_json["x"]
         self.y = position_json["y"]
-
 # Class for a Unit Object
 class Unit:
     # A unit will have the following fields
@@ -18,7 +19,6 @@ class Unit:
         self.id = unit_json["id"]
         self.player_id = unit_json["playerNum"]
         self.pos = Position(unit_json["pos"])
-
 # Class for a Tile Object
 class Tile:
     # A Tile will have an id, hp, and type where type is either 'BLANK', 'DESTRUCTIBLE', or 'INDESTRUCTIBLe'
@@ -27,6 +27,7 @@ class Tile:
         self.hp = tile_json["hp"]
         self.type = tile_json["type"]
 
+
 # Class for a Game Object
 class Game:
     # A Game Object will have a player_id, game_id, and the game represented as a json
@@ -34,22 +35,33 @@ class Game:
         self.game = game_json
         self.player_id = self.game['playerNum']
         self.game_id = self.game["gameId"]
+        if "tiles" in game_json:
+            self.tiles = game_json["tiles"]
+            self.turnsTaken = game_json["turnsTaken"]
+            self.units = game_json["units"]
+        else:
+            self.tiles = []
+            self.units = []
+            self.turnsTaken = 0
+
     def get_setup(self):
         raise NotImplementedError(
             "Please Implement this method in a \"Strategy\" class")
-
     def do_turn(self):
         raise NotImplementedError(
             "Please Implement this method in a \"Strategy\" class")
-
 	# Implement this in the "Strategy" class if you want to do something specific
 	# when a game ends
     def game_over(self, result):
         pass
-
     # updates the game json. Called every turn
     def update_game(self, game_json):
         self.game = game_json
+        self.turnsTaken = self.game["turnsTaken"]
+        self.units = [Unit(unit_json) for unit_json in self.game["units"]]
+        self.tiles = [[Tile(tile_json) for tile_json in tile_json_list] for tile_json_list in self.game["tiles"]]
+        self.game_id = self.game["gameId"]
+        self.player_id = self.game["playerNum"]
 
     """
         Given a player_id, returns the units for that team.
