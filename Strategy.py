@@ -143,14 +143,14 @@ class Strategy(Game):
         for unit in my_units:
             if unit.id in [1, 4]:
                 enemy_in_sights = self.recon(unit.id, False)
-                enemy_can_be_shot = False
+                self.enemy_can_be_shot1 = False
                 for item in enemy_in_sights.values():
                     if item[1] > 0:
-                        enemy_can_be_shot = True
+                        self.enemy_can_be_shot1 = True
 
                 self.decision.append(
                     {
-                        "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
+                        "priority": shoot_priorities.pop(0) if self.enemy_can_be_shot1 else shoot_priorities.pop(-1),
                         "movement": None,
                         "attack": None,
                         "unitId": 1 if self.player_id == 1 else 4
@@ -158,13 +158,13 @@ class Strategy(Game):
                 )
             elif unit.id in [2, 5]:
                 enemy_in_sights = self.recon(unit.id, False)
-                enemy_can_be_shot = False
+                self.enemy_can_be_shot2 = False
                 for item in enemy_in_sights.values():
                     if item[1] > 0:
-                        enemy_can_be_shot = True
+                        self.enemy_can_be_shot2 = True
                 self.decision.append(
                     {
-                        "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
+                        "priority": shoot_priorities.pop(0) if self.enemy_can_be_shot2 else shoot_priorities.pop(-1),
                         "movement": None,
                         "attack": None,
                         "unitId": 2 if self.player_id == 1 else 5
@@ -172,14 +172,14 @@ class Strategy(Game):
                 )
             elif unit.id in [3, 6]:
                 enemy_in_sights = self.recon(unit.id, False)
-                enemy_can_be_shot = False
+                self.enemy_can_be_shot3 = False
                 for item in enemy_in_sights.values():
                     if item[1] > 0:
-                        enemy_can_be_shot = True
+                        self.enemy_can_be_shot3 = True
 
                 self.decision.append(
                     {
-                        "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
+                        "priority": shoot_priorities.pop(0) if self.enemy_can_be_shot3 else shoot_priorities.pop(-1),
                         "movement": None,
                         "attack": None,
                         "unitId": 3 if self.player_id == 1 else 6
@@ -226,7 +226,10 @@ class Strategy(Game):
 
         for entry in self.decision:
             if entry["unitId"] == unit.id:
-                entry["movement"] = res
+                if self.enemy_can_be_shot1:
+                    entry["movement"] = self.clamp_movement(unit, ["STAY"])
+                else:
+                    entry["movement"] = res
 
     def unit_one_attack(self, unit):
         res = self.recon(unit.id, future=True)
@@ -262,7 +265,10 @@ class Strategy(Game):
 
         for entry in self.decision:
             if entry["unitId"] == unit.id:
-                entry["movement"] = res
+                if self.enemy_can_be_shot2:
+                    entry["movement"] = self.clamp_movement(unit, ["STAY"])
+                else:
+                    entry["movement"] = res
 
     def unit_two_attack(self, unit):
         res = self.recon(unit.id, future=True)
@@ -298,7 +304,10 @@ class Strategy(Game):
 
         for entry in self.decision:
             if entry["unitId"] == unit.id:
-                entry["movement"] = res
+                if self.enemy_can_be_shot3:
+                    entry["movement"] = self.clamp_movement(unit, ["STAY"])
+                else:
+                    entry["movement"] = res
 
     def unit_three_attack(self, unit):
         res = self.recon(unit.id, future=True)
