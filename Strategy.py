@@ -19,6 +19,7 @@ class Strategy(Game):
         If player_id is 1, UnitIds for the bots should be 1,2,3. If player_id is 2, UnitIds should be 4,5,6
     """
     def get_setup(self):
+        self.turn = 0
         units = []
         # if you are player1, unitIds will be 1,2,3. If you are player2, they will be 4,5,6
 
@@ -33,9 +34,9 @@ class Strategy(Game):
         # creation of 2d lists
         unit1["attackPattern"] = [
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 2, 2, 0, 0],
-            [0, 0, 1, 1, 1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 2, 1, 0, 0],
+            [0, 1, 0, 2, 0, 1, 0],
+            [1, 0, 0, 0, 0, 0, 1],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
@@ -44,7 +45,7 @@ class Strategy(Game):
             [False, False, False, False, False, False, False],
             [False, False, False, False, False, False, False],
             [False, False, False, False, False, False, False],
-            [False, False, False, False,  False, False, False],
+            [False, False, False, False, False, False, False],
             [False, False, False, False, False, False, False],
             [False, False, False, False, False, False, False]]
         units.append(unit1)
@@ -60,9 +61,9 @@ class Strategy(Game):
         # creation of 2d lists
         unit2["attackPattern"] = [
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 2, 2, 0, 0],
-            [0, 0, 1, 1, 1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 2, 1, 0, 0],
+            [0, 1, 0, 2, 0, 1, 0],
+            [1, 0, 0, 0, 0, 0, 1],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
@@ -87,9 +88,9 @@ class Strategy(Game):
         # creation of 2d lists
         unit3["attackPattern"] = [
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 2, 2, 0, 0],
-            [0, 0, 1, 1, 1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 2, 1, 0, 0],
+            [0, 1, 0, 2, 0, 1, 0],
+            [1, 0, 0, 0, 0, 0, 1],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
@@ -119,6 +120,7 @@ class Strategy(Game):
                 "priority": The bots move one at a time, so give the priority which you want them to act in (1,2, or 3)
     """
     def do_turn(self):
+        self.turn += 1
         self.taken_spots = list()
         for i in range(12):
             for j in range(12):
@@ -128,13 +130,10 @@ class Strategy(Game):
         for unit in self.get_my_units():
             self.taken_spots.append((unit.pos.x, unit.pos.y))
 
-        print('taken_spots:' + str(self.taken_spots), file=sys.stderr)
-
         my_units = self.get_my_units()
         decision = []
 
         for unit in my_units[::-1]:
-            print(unit.speed, file=sys.stderr)
             if unit.id in [1, 4]:
                 decision.append(self.unit_one_actions(unit))
             elif unit.id in [2, 5]:
@@ -143,7 +142,6 @@ class Strategy(Game):
                 decision.append(self.unit_three_actions(unit))
 
         print(decision, file=sys.stderr)
-        print('taken_spots after apply_route: ' + str(self.taken_spots), file=sys.stderr)
         return decision
 
     #MOVE THIS GUY LAST
@@ -155,7 +153,7 @@ class Strategy(Game):
                 "unitId": 1 if self.player_id == 1 else 4
                 }
 
-        target = random.choice(self.get_enemy_units())
+        target = self.get_enemy_units()[0]
 
         res = self.recon(unit.id)
         for key, item in res.items():
@@ -163,10 +161,16 @@ class Strategy(Game):
                 results["attack"] = key
                 break
 
-        nearest_point = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
-        print('nearest_point: ' + str(nearest_point), file=sys.stderr)
+            if item[2] > 0 and item[0] == 0:
+                results["attack"] = key
+                break
+
+        nearest_point = self.get_nearest_point(unit, target.pos)
+        backup = self.get_nearest_point(unit, Position({"x": unit.pos.x, "y": unit.pos.y}) if self.turn == 1 else Position({"x": 5, "y": 5}))
+        print(backup, file=sys.stderr)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
-                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (0, 0),
+                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
+                                backup[0], backup[1]),
                                 self.taken_spots)
         to_enemy = self.clamp_movement(unit, to_enemy)
         results["movement"] = to_enemy
@@ -183,7 +187,7 @@ class Strategy(Game):
                 "unitId": 2 if self.player_id == 1 else 5
                 }
 
-        target = random.choice(self.get_enemy_units())
+        target = self.get_enemy_units()[0]
 
         res = self.recon(unit.id)
         for key, item in res.items():
@@ -191,10 +195,16 @@ class Strategy(Game):
                 results["attack"] = key
                 break
 
-        nearest_point = self.get_nearest_point(unit, Position({"x": 11, "y": 11}))
-        print('nearest_point: ' + str(nearest_point), file=sys.stderr)
+            if item[2] > 0 and item[0] == 0:
+                results["attack"] = key
+                break
+
+        nearest_point = self.get_nearest_point(unit, target.pos)
+        backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
+        print(backup, file=sys.stderr)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
-                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (0, 0),
+                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
+                                backup[0], backup[1]),
                                 self.taken_spots)
         to_enemy = self.clamp_movement(unit, to_enemy)
         results["movement"] = to_enemy
@@ -211,7 +221,7 @@ class Strategy(Game):
                 "unitId": 3 if self.player_id == 1 else 6
                 }
 
-        target = random.choice(self.get_enemy_units())
+        target = self.get_enemy_units()[0]
 
         res = self.recon(unit.id)
         for key, item in res.items():
@@ -219,10 +229,15 @@ class Strategy(Game):
                 results["attack"] = key
                 break
 
-        nearest_point = self.get_nearest_point(unit, Position({"x": 0, "y": 0}))
-        print('nearest_point: ' + str(nearest_point), file=sys.stderr)
+            if item[2] > 0 and item[0] == 0:
+                results["attack"] = key
+                break
+
+        nearest_point = self.get_nearest_point(unit, target.pos)
+        backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
+        print(backup, file=sys.stderr)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
-                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (0, 0),
+                                (nearest_point[0], nearest_point[1]) if nearest_point is not None else (backup[0], backup[1]),
                                 self.taken_spots)
         to_enemy = self.clamp_movement(unit, to_enemy)
         results["movement"] = to_enemy
@@ -244,7 +259,7 @@ class Strategy(Game):
         report = {"UP": None, "DOWN": None, "LEFT": None, "RIGHT": None}
         for direction in report.keys():
             hit_locations = self.get_positions_of_attack_pattern(unit_id, direction)
-            f, e = 0, 0
+            f, e, r = 0, 0, 0
             for unit in self.get_my_units():
                 if unit.id == unit_id:
                     continue
@@ -256,16 +271,19 @@ class Strategy(Game):
                     if self.check_same_position(unit.pos, loc[0]):
                         e += 1
 
-            report[direction] = [f, e]
+            for loc in hit_locations:
+                new_location_with_shit = loc[0]
+                if self.get_tile((new_location_with_shit.x, new_location_with_shit.y)).type == "DESTRUCTIBLE":
+                    r += 1
+
+            report[direction] = [f, e, r]
+            print(direction + " " + str(report[direction]), file=sys.stderr)
         return report
 
     def check_same_position(self, pos1, pos2):
         if pos1.x == pos2.x and pos1.y == pos2.y:
             return True
         return False
-
-    def closest_spot_around(self, enemy_unit):
-        pass
 
     def apply_route(self, unit, directions=None):
         unit_x = unit.pos.x
