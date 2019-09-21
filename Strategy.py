@@ -29,13 +29,22 @@ class Strategy(Game):
                 unit["health"] = 5
                 unit["speed"] = 5
                 # creation of 2d lists
-                unit["attackPattern"] = [[0] * 7 for j in range(7)]
-                unit["terrainPattern"] = [[False]*7 for j in range(7)]
-                # These sample bot will do damage to the tiles to its left, right, and up. And build terrain behind it
-                unit["attackPattern"][3][2] = 2
-                unit["attackPattern"][2][3] = 2
-                unit["attackPattern"][4][2] = 2
-                unit["terrainPattern"][3][2] = True
+                unit["attackPattern"] = [
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][2][0][0][0]
+                    [0][0][2][0][2][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]]
+                unit["terrainPattern"] = [
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][True ][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]]
                 units.append(unit)
 
             # Setup for Bot 2    
@@ -43,13 +52,22 @@ class Strategy(Game):
                 unit["health"] = 5
                 unit["speed"] = 5
                 # creation of 2d lists
-                unit["attackPattern"] = [[0] * 7 for j in range(7)]
-                unit["terrainPattern"] = [[False]*7 for j in range(7)]
-                # These sample bot will do damage to the tiles to its left, right, and up. And build terrain behind it
-                unit["attackPattern"][3][2] = 2
-                unit["attackPattern"][2][3] = 2
-                unit["attackPattern"][4][2] = 2
-                unit["terrainPattern"][3][2] = True
+                unit["attackPattern"] = [
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][2][0][0][0]
+                    [0][0][2][0][2][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]]
+                unit["terrainPattern"] = [
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][True ][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]]
                 units.append(unit)
 
             # Setup for Bot 3
@@ -57,13 +75,22 @@ class Strategy(Game):
                 unit["health"] = 5
                 unit["speed"] = 5
                 #creation of 2d lists
-                unit["attackPattern"] = [[0] * 7 for j in range(7)]
-                unit["terrainPattern"] = [[False]*7 for j in range(7)]
-                # These sample bot will do damage to the tiles to its left, right, and up. And build terrain behind it
-                unit["attackPattern"][3][2] = 2
-                unit["attackPattern"][2][3] = 2
-                unit["attackPattern"][4][2] = 2
-                unit["terrainPattern"][3][2] = True
+                unit["attackPattern"] = [
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][2][0][0][0]
+                    [0][0][2][0][2][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]
+                    [0][0][0][0][0][0][0]]
+                unit["terrainPattern"] = [
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][True ][False][False][False]
+                    [False][False][False][False][False][False][False]
+                    [False][False][False][False][False][False][False]]
                 units.append(unit)
                 
         return units
