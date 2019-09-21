@@ -1,3 +1,4 @@
+import sys
 from API import Game
 
 
@@ -126,9 +127,39 @@ class Strategy(Game):
             elif unit.id in [3, 6]:
                 decision.append(self.unit_three_actions(unit))
 
+        print(decision, file=sys.stderr)
         return decision
 
-    def clamp_movement(self, unit, directions=[]):
+    #MOVE THIS GUY LAST
+    def unit_one_actions(self, unit):
+        results = {
+                "priority": 3,
+                "movement": self.clamp_movement(unit, self.path_to((unit.pos.x, unit.pos.y), (6, 6))),
+                "attack": "STAY",
+                "unitId": 1 if self.player_id == 1 else 4
+                }
+
+        return results
+
+    def unit_two_actions(self, unit):
+        results = {
+                "priority": 2,
+                "movement": self.clamp_movement(unit, self.path_to((unit.pos.x, unit.pos.y), (5, 7))),
+                "attack": "STAY",
+                "unitId": 2 if self.player_id == 1 else 5
+                }
+        return results
+
+    def unit_three_actions(self, unit):
+        results = {
+                "priority": 1,
+                "movement": self.clamp_movement(unit, self.path_to((unit.pos.x, unit.pos.y), (3, 5))),
+                "attack": "STAY",
+                "unitId": 3 if self.player_id == 1 else 6
+                }
+        return results
+
+    def clamp_movement(self, unit, directions=None):
         if directions is None:
             directions = ["STAY"] * 5
         elif len(directions) < unit.speed:
@@ -137,51 +168,25 @@ class Strategy(Game):
             directions = directions[:unit.speed]
         return directions
 
-    #MOVE THIS GUY LAST
-    def unit_one_actions(self, unit):
-        results = {
-                "priority": 3,
-                "movement": self.clamp_movement(unit, [(unit.pos.x, unit.pos.y), (6, 6)]),
-                "attack": "UP",
-                "unitId": 1 if self.player_id == 1 else 4
-                }
-        return results
-
-    def unit_two_actions(self, unit):
-        results = {
-                "priority": 2,
-                "movement": self.clamp_movement(unit, [(unit.pos.x, unit.pos.y), (5, 7)]),
-                "attack": "RIGHT",
-                "unitId": 2 if self.player_id == 1 else 5
-                }
-        return results
-
-    def unit_three_actions(self, unit):
-        results = {
-                "priority": 1,
-                "movement": self.clamp_movement(unit, [(unit.pos.x, unit.pos.y), (3, 5)]),
-                "attack": "RIGHT",
-                "unitId": 3 if self.player_id == 1 else 6
-                }
-        return results
-
     def recon(self, unit_id):
         report = {"UP": None, "DOWN": None, "LEFT": None, "RIGHT": None}
         for direction in report.keys():
             hit_locations = self.get_positions_of_attack_pattern(unit_id, direction)
-            f,e = 0
+            f, e = 0, 0
             for unit in self.get_my_units():
+                if unit.id == unit_id:
+                    continue
                 for loc in hit_locations:
                     if self.check_same_position(unit, loc):
-                        f +=1
+                        f += 1
             for unit in self.get_enemy_units():
                 for loc in hit_locations:
                     if self.check_same_position(unit, loc):
-                        e +=1
+                        e += 1
             report[direction] = [f, e]
         return report
 
-    def check_same_position(pos1, pos2):
+    def check_same_position(self, pos1, pos2):
         if pos1.x == pos2.x and pos1.y == pos2.y:
             return True
         return False
