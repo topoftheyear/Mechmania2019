@@ -19,19 +19,49 @@ class Strategy(Game):
     def get_setup(self):
         units = []
         for i in range(3):
-            unit = {"health": 5, "speed": 5}
-            unit["attackPattern"] = [[0] * 7 for j in range(7)]
             # if you are player1, unitIds will be 1,2,3. If you are player2, they will be 4,5,6
             unit["unitId"] = i + 1
             if self.player_id == 2:
                 unit["unitId"] += 3
-            unit["terrainPattern"] = [[False]*7 for j in range(7)]
-            # These sample bot will do damage to the tiles to its left, right, and up. And build terrain behind it
-            unit["attackPattern"][3][2] = 2
-            unit["attackPattern"][2][3] = 2
-            unit["attackPattern"][4][2] = 2
-            unit["terrainPattern"][3][2] = True
-            units.append(unit)
+            # Setup for Bot 1
+            if i == 0:
+                unit = {"health": 5, "speed": 5}
+                # creation of 2d lists
+                unit["attackPattern"] = [[0] * 7 for j in range(7)]
+                unit["terrainPattern"] = [[False]*7 for j in range(7)]
+                # These sample bot will do damage to the tiles to its left, right, and up. And build terrain behind it
+                unit["attackPattern"][3][2] = 2
+                unit["attackPattern"][2][3] = 2
+                unit["attackPattern"][4][2] = 2
+                unit["terrainPattern"][3][2] = True
+                units.append(unit)
+
+            # Setup for Bot 2    
+            if i == 1:
+                unit = {"health": 5, "speed": 5}
+                # creation of 2d lists
+                unit["attackPattern"] = [[0] * 7 for j in range(7)]
+                unit["terrainPattern"] = [[False]*7 for j in range(7)]
+                # These sample bot will do damage to the tiles to its left, right, and up. And build terrain behind it
+                unit["attackPattern"][3][2] = 2
+                unit["attackPattern"][2][3] = 2
+                unit["attackPattern"][4][2] = 2
+                unit["terrainPattern"][3][2] = True
+                units.append(unit)
+
+            # Setup for Bot 3
+            if i == 2:
+                unit = {"health": 5, "speed": 5}
+                #creation of 2d lists
+                unit["attackPattern"] = [[0] * 7 for j in range(7)]
+                unit["terrainPattern"] = [[False]*7 for j in range(7)]
+                # These sample bot will do damage to the tiles to its left, right, and up. And build terrain behind it
+                unit["attackPattern"][3][2] = 2
+                unit["attackPattern"][2][3] = 2
+                unit["attackPattern"][4][2] = 2
+                unit["terrainPattern"][3][2] = True
+                units.append(unit)
+                
         return units
 
     """
