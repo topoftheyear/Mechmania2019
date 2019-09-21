@@ -35,11 +35,11 @@ class Strategy(Game):
         unit1["speed"] = 4
         # creation of 2d lists
         unit1["attackPattern"] = [
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit1["terrainPattern"] = [
@@ -64,11 +64,11 @@ class Strategy(Game):
         unit2["speed"] = 4
         # creation of 2d lists
         unit2["attackPattern"] = [
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit2["terrainPattern"] = [
@@ -93,11 +93,11 @@ class Strategy(Game):
         unit3["speed"] = 4
         # creation of 2d lists
         unit3["attackPattern"] = [
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit3["terrainPattern"] = [
@@ -139,29 +139,47 @@ class Strategy(Game):
 
         my_units = self.get_my_units()
         self.decision = list()
-        for fuckwad in my_units:
-            if fuckwad.id in [1, 4]:
+        shoot_priorities = [1, 2, 3]
+        for unit in my_units:
+            if unit.id in [1, 4]:
+                enemy_in_sights = self.recon(unit.id, False)
+                enemy_can_be_shot = False
+                for item in enemy_in_sights.values():
+                    if item[1] > 0:
+                        enemy_can_be_shot = True
+
                 self.decision.append(
                     {
-                        "priority": 3,
+                        "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
                         "movement": None,
                         "attack": None,
                         "unitId": 1 if self.player_id == 1 else 4
                     }
                 )
-            elif fuckwad.id in [2, 5]:
+            elif unit.id in [2, 5]:
+                enemy_in_sights = self.recon(unit.id, False)
+                enemy_can_be_shot = False
+                for item in enemy_in_sights.values():
+                    if item[1] > 0:
+                        enemy_can_be_shot = True
                 self.decision.append(
                     {
-                        "priority": 2,
+                        "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
                         "movement": None,
                         "attack": None,
                         "unitId": 2 if self.player_id == 1 else 5
                     }
                 )
-            elif fuckwad.id in [3, 6]:
+            elif unit.id in [3, 6]:
+                enemy_in_sights = self.recon(unit.id, False)
+                enemy_can_be_shot = False
+                for item in enemy_in_sights.values():
+                    if item[1] > 0:
+                        enemy_can_be_shot = True
+
                 self.decision.append(
                     {
-                        "priority": 1,
+                        "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
                         "movement": None,
                         "attack": None,
                         "unitId": 3 if self.player_id == 1 else 6
@@ -216,8 +234,7 @@ class Strategy(Game):
             if item[1] > 0 and item[0] == 0:
                 att = key
                 break
-
-            if item[2] > 0 and item[0] == 0:
+            elif item[2] > 0 and item[0] == 0:
                 att = key
                 break
 
@@ -252,8 +269,7 @@ class Strategy(Game):
             if item[1] > 0 and item[0] == 0:
                 att = key
                 break
-
-            if item[2] > 0 and item[0] == 0:
+            elif item[2] > 0 and item[0] == 0:
                 att = key
                 break
 
@@ -288,8 +304,7 @@ class Strategy(Game):
             if item[1] > 0 and item[0] == 0:
                 att = key
                 break
-
-            if item[2] > 0 and item[0] == 0:
+            elif item[2] > 0 and item[0] == 0:
                 att = key
                 break
 
