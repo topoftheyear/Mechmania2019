@@ -32,9 +32,9 @@ class Strategy(Game):
         unit1["speed"] = 4
         # creation of 2d lists
         unit1["attackPattern"] = [
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 5, 0, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 2, 2, 2, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
@@ -59,9 +59,9 @@ class Strategy(Game):
         unit2["speed"] = 4
         # creation of 2d lists
         unit2["attackPattern"] = [
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 5, 0, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 2, 2, 2, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
@@ -86,9 +86,9 @@ class Strategy(Game):
         unit3["speed"] = 4
         # creation of 2d lists
         unit3["attackPattern"] = [
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 5, 0, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 2, 2, 2, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
@@ -123,7 +123,7 @@ class Strategy(Game):
         my_units = self.get_my_units()
         decision = []
 
-        for unit in my_units:
+        for unit in my_units[::-1]:
             print(unit.speed, file=sys.stderr)
             if unit.id in [1, 4]:
                 decision.append(self.unit_one_actions(unit))
@@ -148,16 +148,12 @@ class Strategy(Game):
 
         res = self.recon(unit.id)
         for key, item in res.items():
-            if item[1] > item[0]:
+            if item[1] > 0 and item[0] == 0:
                 results["attack"] = key
                 break
-        else:
-            for key, item in res.items():
-                if item[2] > 0:
-                    results["attack"] = key
 
-        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6))
-        results["movement"] = self.clamp_movement(unit, to_enemy if to_enemy is not None else ["DOWN", "RIGHT"])
+        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6), self.taken_spots)
+        results["movement"] = self.clamp_movement(unit, to_enemy)
 
         return results
 
@@ -173,16 +169,12 @@ class Strategy(Game):
 
         res = self.recon(unit.id)
         for key, item in res.items():
-            if item[1] > item[0]:
+            if item[1] > 0 and item[0] == 0:
                 results["attack"] = key
                 break
-        else:
-            for key, item in res.items():
-                if item[2] > 0:
-                    results["attack"] = key
 
-        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6))
-        results["movement"] = self.clamp_movement(unit, to_enemy if to_enemy is not None else ["DOWN", "RIGHT"])
+        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6), self.taken_spots)
+        results["movement"] = self.clamp_movement(unit, to_enemy)
 
         return results
 
@@ -198,16 +190,12 @@ class Strategy(Game):
 
         res = self.recon(unit.id)
         for key, item in res.items():
-            if item[1] > item[0]:
+            if item[1] > 0 and item[0] == 0:
                 results["attack"] = key
                 break
-        else:
-            for key, item in res.items():
-                if item[2] > 0:
-                    results["attack"] = key
 
-        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6))
-        results["movement"] = self.clamp_movement(unit, to_enemy if to_enemy is not None else ["DOWN", "RIGHT"])
+        to_enemy = self.path_to((unit.pos.x, unit.pos.y), (6, 6), self.taken_spots)
+        results["movement"] = self.clamp_movement(unit, to_enemy)
 
         return results
 
@@ -224,7 +212,7 @@ class Strategy(Game):
         report = {"UP": None, "DOWN": None, "LEFT": None, "RIGHT": None}
         for direction in report.keys():
             hit_locations = self.get_positions_of_attack_pattern(unit_id, direction)
-            f, e, r = 0, 0, 0
+            f, e = 0, 0
             for unit in self.get_my_units():
                 if unit.id == unit_id:
                     continue
@@ -235,10 +223,8 @@ class Strategy(Game):
                 for loc in hit_locations:
                     if self.check_same_position(unit.pos, loc[0]):
                         e += 1
-            for loc in hit_locations:
-                if self.get_tile([loc[0].x, loc[0].y]).hp > 0:
-                    r += 1
-            report[direction] = [f, e, r]
+
+            report[direction] = [f, e]
         return report
 
     def check_same_position(self, pos1, pos2):
