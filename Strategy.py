@@ -30,21 +30,21 @@ class Strategy(Game):
                 unit["speed"] = 5
                 # creation of 2d lists
                 unit["attackPattern"] = [
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][2][0][0][0]
-                    [0][0][2][0][2][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]]
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 2, 0, 0, 0],
+                    [0, 0, 2, 0, 2, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0]]
                 unit["terrainPattern"] = [
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][True ][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]]
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, True,  False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False]]
                 units.append(unit)
 
             # Setup for Bot 2    
@@ -53,21 +53,21 @@ class Strategy(Game):
                 unit["speed"] = 5
                 # creation of 2d lists
                 unit["attackPattern"] = [
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][2][0][0][0]
-                    [0][0][2][0][2][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]]
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 2, 0, 0, 0],
+                    [0, 0, 2, 0, 2, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0]]
                 unit["terrainPattern"] = [
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][True ][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]]
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, True,  False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False]]
                 units.append(unit)
 
             # Setup for Bot 3
@@ -76,21 +76,21 @@ class Strategy(Game):
                 unit["speed"] = 5
                 #creation of 2d lists
                 unit["attackPattern"] = [
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][2][0][0][0]
-                    [0][0][2][0][2][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]
-                    [0][0][0][0][0][0][0]]
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 2, 0, 0, 0],
+                    [0, 0, 2, 0, 2, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0]]
                 unit["terrainPattern"] = [
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][True ][False][False][False]
-                    [False][False][False][False][False][False][False]
-                    [False][False][False][False][False][False][False]]
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, True,  False, False, False],
+                    [False, False, False, False, False, False, False],
+                    [False, False, False, False, False, False, False]]
                 units.append(unit)
                 
         return units
