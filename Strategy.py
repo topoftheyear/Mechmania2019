@@ -31,11 +31,11 @@ class Strategy(Game):
         # creation of 2d lists
         unit1["attackPattern"] = [
             [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0],
-            [0, 0, 1, 0, 1, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 0],
+            [0, 1, 0, 0, 0, 1, 0],
+            [0, 1, 0, 0, 0, 1, 0],
+            [0, 1, 0, 0, 0, 1, 0],
+            [0, 0, 1, 1, 1, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit1["terrainPattern"] = [
             [False, False, False, False, False, False, False],
@@ -120,44 +120,47 @@ class Strategy(Game):
 
         for unit in my_units:
             if unit.id in [1, 4]:
-                decision.append(self.unit_one_actions)
+                decision.append(self.unit_one_actions(unit))
             elif unit.id in [2, 5]:
-                decision.append(self.unit_two_actions)
+                decision.append(self.unit_two_actions(unit))
             elif unit.id in [3, 6]:
-                decision.append(self.unit_three_actions)
+                decision.append(self.unit_three_actions(unit))
 
         return decision
 
     def clamp_movement(self, unit, directions=[]):
-        if len(directions) < unit.speed:
+        if directions is None:
+            directions = ["STAY"] * 5
+        elif len(directions) < unit.speed:
             directions += (unit.speed - len(directions)) * ["STAY"]
-        if len(directions) > unit.speed:
+        elif len(directions) > unit.speed:
             directions = directions[:unit.speed]
         return directions
 
-    def unit_one_actions(self):
+    #MOVE THIS GUY LAST
+    def unit_one_actions(self, unit):
         results = {
                 "priority": 3,
-                "movement": self.clamp_movement(unit, []),
-                "attack": "STAY",
+                "movement": self.clamp_movement(unit, [(unit.pos.x, unit.pos.y), (6, 6)]),
+                "attack": "UP",
                 "unitId": 1 if self.player_id == 1 else 4
                 }
         return results
 
-    def unit_two_actions(self):
+    def unit_two_actions(self, unit):
         results = {
-                "priority": 3,
-                "movement": self.clamp_movement(unit, []),
-                "attack": "STAY",
+                "priority": 2,
+                "movement": self.clamp_movement(unit, [(unit.pos.x, unit.pos.y), (5, 7)]),
+                "attack": "RIGHT",
                 "unitId": 2 if self.player_id == 1 else 5
                 }
         return results
 
-    def unit_three_actions(self):
+    def unit_three_actions(self, unit):
         results = {
-                "priority": 3,
-                "movement": self.clamp_movement(unit, []),
-                "attack": "STAY",
+                "priority": 1,
+                "movement": self.clamp_movement(unit, [(unit.pos.x, unit.pos.y), (3, 5)]),
+                "attack": "RIGHT",
                 "unitId": 3 if self.player_id == 1 else 6
                 }
         return results
