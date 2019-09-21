@@ -18,80 +18,88 @@ class Strategy(Game):
     """
     def get_setup(self):
         units = []
-        for i in range(3):
-            # if you are player1, unitIds will be 1,2,3. If you are player2, they will be 4,5,6
-            unit = dict()
-            unit["unitId"] = i + 1
-            if self.player_id == 2:
-                unit["unitId"] += 3
-            # Setup for Bot 1
-            if i == 0:
-                unit["health"] = 5
-                unit["speed"] = 5
-                # creation of 2d lists
-                unit["attackPattern"] = [
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 2, 0, 0, 0],
-                    [0, 0, 2, 0, 2, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0]]
-                unit["terrainPattern"] = [
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, True,  False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False]]
-                units.append(unit)
+        # if you are player1, unitIds will be 1,2,3. If you are player2, they will be 4,5,6
 
-            # Setup for Bot 2    
-            if i == 1:
-                unit["health"] = 5
-                unit["speed"] = 5
-                # creation of 2d lists
-                unit["attackPattern"] = [
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 2, 0, 0, 0],
-                    [0, 0, 2, 0, 2, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0]]
-                unit["terrainPattern"] = [
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, True,  False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False]]
-                units.append(unit)
+        # Setup for Bot 1
+        unit1 = dict()
+        unit1["unitId"] = 1
+        if self.player_id == 2:
+            unit1["unitId"] += 3
 
-            # Setup for Bot 3
-            if i == 2:
-                unit["health"] = 5
-                unit["speed"] = 5
-                #creation of 2d lists
-                unit["attackPattern"] = [
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 2, 0, 0, 0],
-                    [0, 0, 2, 0, 2, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0]]
-                unit["terrainPattern"] = [
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, True,  False, False, False],
-                    [False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False]]
-                units.append(unit)
+        unit1["health"] = 5
+        unit1["speed"] = 5
+        # creation of 2d lists
+        unit1["attackPattern"] = [
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]]
+        unit1["terrainPattern"] = [
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, True,  False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False]]
+        units.append(unit1)
+
+        # Setup for Bot 2
+        unit2 = dict()
+        unit2["unitId"] = 2
+        if self.player_id == 2:
+            unit2["unitId"] += 3
+
+        unit2["health"] = 5
+        unit2["speed"] = 5
+        # creation of 2d lists
+        unit2["attackPattern"] = [
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]]
+        unit2["terrainPattern"] = [
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, True, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False]]
+        units.append(unit2)
+
+        # Setup for Bot 3
+        unit3 = dict()
+        unit3["unitId"] = 3
+        if self.player_id == 2:
+            unit3["unitId"] += 3
+
+        unit3["health"] = 5
+        unit3["speed"] = 5
+        # creation of 2d lists
+        unit3["attackPattern"] = [
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]]
+        unit3["terrainPattern"] = [
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, True, False, False, False],
+            [False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False]]
+        units.append(unit3)
                 
         return units
 
@@ -108,23 +116,10 @@ class Strategy(Game):
     """
     def do_turn(self):
         my_units = self.get_my_units()
-        decision = [
-            {
-                "priority": 1,
-                "movement": ["UP"],
-                "attack": "UP",
-                "unitId": my_units[2].id
-            },
-            {
-                "priority": 2,
-                "movement": ["UP"],
-                "attack": "UP",
-                "unitId": my_units[1].id
-            },
-            {
-                "priority": 3,
-                "movement": ["UP"],
-                "attack": "UP",
-                "unitId": my_units[0].id
-            }]
+        decision = [{
+            "priority": i + 1,
+            "movement": ["DOWN"] * my_units[i].speed,
+            "attack": "DOWN",
+            "unitId": my_units[i].id
+        } for i in range(len(my_units))]
         return decision
