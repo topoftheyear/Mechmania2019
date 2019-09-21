@@ -20,12 +20,14 @@ class Strategy(Game):
         units = []
         for i in range(3):
             # if you are player1, unitIds will be 1,2,3. If you are player2, they will be 4,5,6
+            unit = dict()
             unit["unitId"] = i + 1
             if self.player_id == 2:
                 unit["unitId"] += 3
             # Setup for Bot 1
             if i == 0:
-                unit = {"health": 5, "speed": 5}
+                unit["health"] = 5
+                unit["speed"] = 5
                 # creation of 2d lists
                 unit["attackPattern"] = [[0] * 7 for j in range(7)]
                 unit["terrainPattern"] = [[False]*7 for j in range(7)]
@@ -38,7 +40,8 @@ class Strategy(Game):
 
             # Setup for Bot 2    
             if i == 1:
-                unit = {"health": 5, "speed": 5}
+                unit["health"] = 5
+                unit["speed"] = 5
                 # creation of 2d lists
                 unit["attackPattern"] = [[0] * 7 for j in range(7)]
                 unit["terrainPattern"] = [[False]*7 for j in range(7)]
@@ -51,7 +54,8 @@ class Strategy(Game):
 
             # Setup for Bot 3
             if i == 2:
-                unit = {"health": 5, "speed": 5}
+                unit["health"] = 5
+                unit["speed"] = 5
                 #creation of 2d lists
                 unit["attackPattern"] = [[0] * 7 for j in range(7)]
                 unit["terrainPattern"] = [[False]*7 for j in range(7)]
@@ -80,20 +84,20 @@ class Strategy(Game):
         decision = [
             {
                 "priority": 1,
-                "movement": ["RIGHT", "RIGHT", "RIGHT", "DOWN", "LEFT"],
-                "attack": "DOWN",
+                "movement": ["UP"],
+                "attack": "UP",
                 "unitId": my_units[2].id
             },
             {
                 "priority": 2,
-                "movement": ["LEFT" * my_units[1].speed],
+                "movement": ["UP"],
                 "attack": "UP",
                 "unitId": my_units[1].id
             },
             {
                 "priority": 3,
-                "movement": ["DOWN" * my_units[2].speed],
-                "attack": "DOWN",
+                "movement": ["UP"],
+                "attack": "UP",
                 "unitId": my_units[0].id
             }]
         return decision
