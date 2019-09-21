@@ -116,10 +116,35 @@ class Strategy(Game):
     """
     def do_turn(self):
         my_units = self.get_my_units()
-        decision = [{
-            "priority": i + 1,
-            "movement": ["DOWN"] * my_units[i].speed,
-            "attack": "DOWN",
-            "unitId": my_units[i].id
-        } for i in range(len(my_units))]
+        decision = []
+
+        for unit in my_units:
+            if unit.id in [1, 4]:
+                decision.append(
+                    {
+                        "priority": 1,
+                        "movement": ["RIGHT"] * 5,
+                        "attack": "DOWN",
+                        "unitId": 1 if self.player_id == 1 else 4
+                    }
+                )
+            elif unit.id in [2, 5]:
+                decision.append(
+                    {
+                        "priority": 2,
+                        "movement": ["RIGHT"] * 5,
+                        "attack": "DOWN",
+                        "unitId": 2 if self.player_id == 1 else 5
+                    }
+                )
+            elif unit.id in [3, 6]:
+                decision.append(
+                    {
+                        "priority": 3,
+                        "movement": ["RIGHT"] * 5,
+                        "attack": "DOWN",
+                        "unitId": 3 if self.player_id == 1 else 6
+                    }
+                )
+
         return decision
