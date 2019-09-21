@@ -32,9 +32,9 @@ class Strategy(Game):
         unit1["attackPattern"] = [
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 0, 2, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit1["terrainPattern"] = [
@@ -59,8 +59,8 @@ class Strategy(Game):
         unit2["attackPattern"] = [
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 2, 2, 2, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
@@ -84,10 +84,10 @@ class Strategy(Game):
         unit3["speed"] = 5
         # creation of 2d lists
         unit3["attackPattern"] = [
-            [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
@@ -122,8 +122,8 @@ class Strategy(Game):
             if unit.id in [1, 4]:
                 decision.append(
                     {
-                        "priority": 1,
-                        "movement": ["RIGHT"] * 5,
+                        "priority": 3,
+                        "movement": self.clamp_movement(unit, self.path_to((unit.pos.x, unit.pos.y), (4, 11))) if self.player_id == 1 else ["RIGHT"] * 5,
                         "attack": "DOWN",
                         "unitId": 1 if self.player_id == 1 else 4
                     }
@@ -140,11 +140,18 @@ class Strategy(Game):
             elif unit.id in [3, 6]:
                 decision.append(
                     {
-                        "priority": 3,
-                        "movement": ["RIGHT"] * 5,
+                        "priority": 1,
+                        "movement": ["RIGHT", "DOWN", "DOWN", "DOWN", "DOWN"],
                         "attack": "DOWN",
                         "unitId": 3 if self.player_id == 1 else 6
                     }
                 )
 
         return decision
+
+    def clamp_movement(self, unit, directions=[]):
+        if len(directions) < unit.speed:
+            directions += (unit.speed - len(directions)) * ["STAY"]
+        if len(directions) > unit.speed:
+            directions = directions[:unit.speed]
+        return directions
