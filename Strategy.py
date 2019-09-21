@@ -31,15 +31,15 @@ class Strategy(Game):
 
         self.unit1_future_position = (0, 0)
 
-        unit1["health"] = 4
-        unit1["speed"] = 4
+        unit1["health"] = 5
+        unit1["speed"] = 5
         # creation of 2d lists
         unit1["attackPattern"] = [
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 1, 2, 1, 0, 0],
-            [0, 0, 1, 2, 1, 0, 0],
-            [0, 0, 1, 0, 1, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit1["terrainPattern"] = [
@@ -60,15 +60,15 @@ class Strategy(Game):
 
         self.unit2_future_position = (0, 0)
 
-        unit2["health"] = 4
-        unit2["speed"] = 4
+        unit2["health"] = 5
+        unit2["speed"] = 5
         # creation of 2d lists
         unit2["attackPattern"] = [
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 1, 2, 1, 0, 0],
-            [0, 0, 1, 2, 1, 0, 0],
-            [0, 0, 1, 0, 1, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit2["terrainPattern"] = [
@@ -89,15 +89,15 @@ class Strategy(Game):
 
         self.unit3_future_position = (0, 0)
 
-        unit3["health"] = 4
-        unit3["speed"] = 4
+        unit3["health"] = 5
+        unit3["speed"] = 5
         # creation of 2d lists
         unit3["attackPattern"] = [
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 1, 2, 1, 0, 0],
-            [0, 0, 1, 2, 1, 0, 0],
-            [0, 0, 1, 0, 1, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 2, 0, 2, 0, 0],
+            [0, 0, 0, 2, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit3["terrainPattern"] = [
@@ -206,8 +206,7 @@ class Strategy(Game):
 
     # Move last
     def unit_one_move(self, unit):
-        target = self.get_target()
-        print(f'1: {target}', file=sys.stderr)
+        target = self.get_target(unit)
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit,
@@ -231,13 +230,10 @@ class Strategy(Game):
 
     def unit_one_attack(self, unit):
         res = self.recon(unit.id, future=True)
-        att = "STAY"
+        att = "UP"
         for key, item in res.items():
-            if item[1] > 0 and item[0] == 0:
-                att = key
-                break
-            elif item[2] > 0 and item[0] == 0:
-                att = key
+            if item[0] > item[1]:
+                att = "STAY"
                 break
 
         for entry in self.decision:
@@ -245,8 +241,7 @@ class Strategy(Game):
                 entry["attack"] = att
 
     def unit_two_move(self, unit):
-        target = self.get_target()
-        print(f'2: {target}', file=sys.stderr)
+        target = self.get_target(unit)
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
@@ -268,13 +263,10 @@ class Strategy(Game):
 
     def unit_two_attack(self, unit):
         res = self.recon(unit.id, future=True)
-        att = "STAY"
+        att = "UP"
         for key, item in res.items():
-            if item[1] > 0 and item[0] == 0:
-                att = key
-                break
-            elif item[2] > 0 and item[0] == 0:
-                att = key
+            if item[0] > item[1]:
+                att = "STAY"
                 break
 
         for entry in self.decision:
@@ -282,8 +274,7 @@ class Strategy(Game):
                 entry["attack"] = att
 
     def unit_three_move(self, unit):
-        target = self.get_target()
-        print(f'3: {target}', file=sys.stderr)
+        target = self.get_target(unit)
 
         nearest_point = self.get_nearest_point(unit, target.pos)
         backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
@@ -305,13 +296,10 @@ class Strategy(Game):
 
     def unit_three_attack(self, unit):
         res = self.recon(unit.id, future=True)
-        att = "STAY"
+        att = "UP"
         for key, item in res.items():
-            if item[1] > 0 and item[0] == 0:
-                att = key
-                break
-            elif item[2] > 0 and item[0] == 0:
-                att = key
+            if item[0] > item[1]:
+                att = "STAY"
                 break
 
         for entry in self.decision:
@@ -327,16 +315,20 @@ class Strategy(Game):
             directions = directions[:unit.speed]
         return directions
 
-    def get_target(self):
-        ids = [2, 3, 1, 5, 6, 4]
+    def get_target(self, unit):
+        min_distance = 10000000
+        min_enemy = None
         for enemy in self.get_enemy_units():
-            for eyedee in ids:
-                if enemy.id == eyedee:
-                    return enemy
+            dist = ((enemy.pos.x - unit.pos.x) ** 2 + (enemy.pos.y - unit.pos.y) ** 2) ** 0.5
+            if dist < min_distance:
+                min_distance = dist
+                min_enemy = enemy
+
+        return min_enemy
 
     def recon(self, unit_id, future=False):
         report = {"UP": None, "DOWN": None, "LEFT": None, "RIGHT": None}
-        unfucker = {"UP": "RIGHT", "DOWN": "LEFT", "LEFT": "UP", "RIGHT": "DOWN"}
+        unfucker = {"UP": "DOWN", "DOWN": "UP", "LEFT": "LEFT", "RIGHT": "RIGHT"}
         for direction in report.keys():
             hit_locations = self.get_positions_of_attack_pattern(unit_id, direction)
             f, e, r = 0, 0, 0
@@ -345,27 +337,36 @@ class Strategy(Game):
                     for loc in hit_locations:
                         if pos == (loc[0].x, loc[0].y):
                             f += 1
-                            print(pos, file=sys.stderr)
+
+                        new_location_with_shit = loc[0]
+                        if self.get_tile((new_location_with_shit.x,
+                                          new_location_with_shit.y)).type.lower() in "DESTRUCTIBLE".lower():
+                            r += 1
+
             else:
                 for unit in self.get_my_units():
-                    if unit.id == unit_id:
+                    if unit.id not in ([1,2,3] if self.player_id == 1 else [4,5,6]):
                         continue
                     for loc in hit_locations:
                         if self.check_same_position(unit.pos, loc[0]):
                             f += 1
+
+                for loc in hit_locations:
+                    new_location_with_shit = loc[0]
+                    if self.get_tile((new_location_with_shit.x,
+                                      new_location_with_shit.y)).type.lower() in "DESTRUCTIBLE".lower():
+                        r += 1
             for unit in self.get_enemy_units():
+                if unit.id in ([1, 2, 3] if self.player_id == 1 else [4, 5, 6]):
+                    continue
                 for loc in hit_locations:
                     if self.check_same_position(unit.pos, loc[0]):
                         e += 1
 
-            for loc in hit_locations:
-                new_location_with_shit = loc[0]
-                if self.get_tile((new_location_with_shit.x, new_location_with_shit.y)).type == "DESTRUCTIBLE":
-                    r += 1
+
 
             direction = unfucker[direction]
             report[direction] = [f, e, r]
-            print(direction + " " + str(report[direction]), file=sys.stderr)
         return report
 
     def check_same_position(self, pos1, pos2):
