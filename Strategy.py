@@ -19,7 +19,6 @@ class Strategy(Game):
         If player_id is 1, UnitIds for the bots should be 1,2,3. If player_id is 2, UnitIds should be 4,5,6
     """
     def get_setup(self):
-        self.turnsTaken = 0
         units = []
         # if you are player1, unitIds will be 1,2,3. If you are player2, they will be 4,5,6
 
@@ -29,17 +28,15 @@ class Strategy(Game):
         if self.player_id == 2:
             unit1["unitId"] += 3
 
-        self.unit1_future_position = (0, 0)
-
         unit1["health"] = 5
-        unit1["speed"] = 5
+        unit1["speed"] = 4
         # creation of 2d lists
         unit1["attackPattern"] = [
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 0, 2, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0, 0],
+            [1, 2, 2, 0, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit1["terrainPattern"] = [
@@ -58,17 +55,17 @@ class Strategy(Game):
         if self.player_id == 2:
             unit2["unitId"] += 3
 
-        self.unit2_future_position = (0, 0)
+
 
         unit2["health"] = 5
-        unit2["speed"] = 5
+        unit2["speed"] = 4
         # creation of 2d lists
         unit2["attackPattern"] = [
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 0, 2, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0, 0],
+            [1, 2, 2, 0, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit2["terrainPattern"] = [
@@ -87,17 +84,15 @@ class Strategy(Game):
         if self.player_id == 2:
             unit3["unitId"] += 3
 
-        self.unit3_future_position = (0, 0)
-
         unit3["health"] = 5
-        unit3["speed"] = 5
+        unit3["speed"] = 4
         # creation of 2d lists
         unit3["attackPattern"] = [
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
-            [0, 0, 2, 0, 2, 0, 0],
-            [0, 0, 0, 2, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0, 0],
+            [1, 2, 2, 0, 0, 0, 0],
+            [0, 1, 1, 1, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]]
         unit3["terrainPattern"] = [
@@ -109,8 +104,6 @@ class Strategy(Game):
             [False, False, False, False, False, False, False],
             [False, False, False, False, False, False, False]]
         units.append(unit3)
-
-        self.taken_spots = list()
 
         return units
 
@@ -126,19 +119,18 @@ class Strategy(Game):
                 "priority": The bots move one at a time, so give the priority which you want them to act in (1,2, or 3)
     """
     def do_turn(self):
-        self.turnsTaken += 1
-        print(f'\nTURN {self.turnsTaken}\n', file=sys.stderr)
-        self.taken_spots = list()
+        taken_spots = list()
+
         for i in range(12):
             for j in range(12):
                 checked_tile = self.get_tile((i, j))
                 if checked_tile.type == 'DESTRUCTIBLE':
-                    self.taken_spots.append((i, j))
+                    taken_spots.append((i, j))
         for unit in self.get_my_units():
-            self.taken_spots.append((unit.pos.x, unit.pos.y))
+            taken_spots.append((unit.pos.x, unit.pos.y))
 
         my_units = self.get_my_units()
-        self.decision = list()
+        decision = list()
         shoot_priorities = [1, 2, 3]
         for unit in my_units:
             if unit.id in [1, 4]:
@@ -148,7 +140,7 @@ class Strategy(Game):
                     if item[1] > 0:
                         enemy_can_be_shot = True
 
-                self.decision.append(
+                decision.append(
                     {
                         "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
                         "movement": None,
@@ -162,7 +154,7 @@ class Strategy(Game):
                 for item in enemy_in_sights.values():
                     if item[1] > 0:
                         enemy_can_be_shot = True
-                self.decision.append(
+                decision.append(
                     {
                         "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
                         "movement": None,
@@ -177,7 +169,7 @@ class Strategy(Game):
                     if item[1] > 0:
                         enemy_can_be_shot = True
 
-                self.decision.append(
+                decision.append(
                     {
                         "priority": shoot_priorities.pop(0) if enemy_can_be_shot else shoot_priorities.pop(-1),
                         "movement": None,
@@ -186,123 +178,140 @@ class Strategy(Game):
                     }
                 )
 
+        u1f = 0
+        u2f = 0
+        u3f = 0
         for unit in my_units[::-1]:
             if unit.id in [1, 4]:
-                self.unit_one_move(unit)
+                u1f = self.unit_one_move(unit, taken_spots, decision)
             elif unit.id in [2, 5]:
-                self.unit_two_move(unit)
+                u2f = self.unit_two_move(unit, taken_spots, decision)
             elif unit.id in [3, 6]:
-                self.unit_three_move(unit)
+                u3f = self.unit_three_move(unit, taken_spots, decision)
         for unit in my_units[::-1]:
             if unit.id in [1, 4]:
-                self.unit_one_attack(unit)
+                self.unit_one_attack(unit, decision, u1f, u2f, u3f)
             elif unit.id in [2, 5]:
-                self.unit_two_attack(unit)
+                self.unit_two_attack(unit, decision, u1f, u2f, u3f)
             elif unit.id in [3, 6]:
-                self.unit_three_attack(unit)
+                self.unit_three_attack(unit, decision, u1f, u2f, u3f)
 
-        print(self.decision, file=sys.stderr)
-        return self.decision
+        return decision
 
     # Move last
-    def unit_one_move(self, unit):
-        target = self.get_target(unit)
+    def unit_one_move(self, unit, taken_spots, decision):
+        target = self.get_target()
 
-        nearest_point = self.get_nearest_point(unit, target.pos)
+        nearest_point = self.get_nearest_point(unit, target.pos, taken_spots)
         backup = self.get_nearest_point(unit,
                                         Position({"x": unit.pos.x, "y": unit.pos.y}) if self.turnsTaken == 1 else Position(
-                                            {"x": 5, "y": 5}))
+                                            {"x": 5, "y": 5}), taken_spots)
         if backup is None:
             backup = (unit.pos.x, unit.pos.y)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
                                 (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
                                     backup[0], backup[1]),
-                                self.taken_spots)
+                                taken_spots)
         to_enemy = self.clamp_movement(unit, to_enemy)
         res = to_enemy
         end_x, end_y = self.apply_route(unit, to_enemy)
-        self.taken_spots.append((end_x, end_y))
-        self.unit1_future_position = (end_x, end_y)
+        taken_spots.append((end_x, end_y))
+        unit1_future_position = (end_x, end_y)
 
-        for entry in self.decision:
+        for entry in decision:
             if entry["unitId"] == unit.id:
                 entry["movement"] = res
 
-    def unit_one_attack(self, unit):
-        res = self.recon(unit.id, future=True)
-        att = "UP"
+        return unit1_future_position
+
+    def unit_one_attack(self, unit, decision, u1f, u2f, u3f):
+        res = self.recon(unit.id, u1f, u2f, u3f, future=True)
+        att = "STAY"
         for key, item in res.items():
-            if item[0] > item[1]:
-                att = "STAY"
+            if item[1] > 0 and item[0] == 0:
+                att = key
+                break
+            elif item[2] > 0 and item[0] == 0:
+                att = key
                 break
 
-        for entry in self.decision:
+        for entry in decision:
             if entry["unitId"] == unit.id:
                 entry["attack"] = att
 
-    def unit_two_move(self, unit):
-        target = self.get_target(unit)
+    def unit_two_move(self, unit, taken_spots, decision):
+        target = self.get_target()
 
-        nearest_point = self.get_nearest_point(unit, target.pos)
-        backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
+        nearest_point = self.get_nearest_point(unit, target.pos, taken_spots)
+        backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}), taken_spots)
         if backup is None:
             backup = (unit.pos.x, unit.pos.y)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
                                 (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
                                     backup[0], backup[1]),
-                                self.taken_spots)
+                                taken_spots)
         to_enemy = self.clamp_movement(unit, to_enemy)
         res = to_enemy
         end_x, end_y = self.apply_route(unit, to_enemy)
-        self.taken_spots.append((end_x, end_y))
-        self.unit2_future_position = (end_x, end_y)
+        taken_spots.append((end_x, end_y))
+        unit2_future_position = (end_x, end_y)
 
-        for entry in self.decision:
+        for entry in decision:
             if entry["unitId"] == unit.id:
                 entry["movement"] = res
 
-    def unit_two_attack(self, unit):
-        res = self.recon(unit.id, future=True)
-        att = "UP"
+        return unit2_future_position
+
+    def unit_two_attack(self, unit, decision, u1f, u2f, u3f):
+        res = self.recon(unit.id, u1f, u2f, u3f, future=True)
+        att = "STAY"
         for key, item in res.items():
-            if item[0] > item[1]:
-                att = "STAY"
+            if item[1] > 0 and item[0] == 0:
+                att = key
+                break
+            elif item[2] > 0 and item[0] == 0:
+                att = key
                 break
 
-        for entry in self.decision:
+        for entry in decision:
             if entry["unitId"] == unit.id:
                 entry["attack"] = att
 
-    def unit_three_move(self, unit):
-        target = self.get_target(unit)
+    def unit_three_move(self, unit, taken_spots, decision):
+        target = self.get_target()
 
-        nearest_point = self.get_nearest_point(unit, target.pos)
-        backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}))
+        nearest_point = self.get_nearest_point(unit, target.pos, taken_spots)
+        backup = self.get_nearest_point(unit, Position({"x": 5, "y": 5}), taken_spots)
         if backup is None:
             backup = (unit.pos.x, unit.pos.y)
         to_enemy = self.path_to((unit.pos.x, unit.pos.y),
                                 (nearest_point[0], nearest_point[1]) if nearest_point is not None else (
                                     backup[0], backup[1]),
-                                self.taken_spots)
+                                taken_spots)
         to_enemy = self.clamp_movement(unit, to_enemy)
         res = to_enemy
         end_x, end_y = self.apply_route(unit, to_enemy)
-        self.taken_spots.append((end_x, end_y))
-        self.unit3_future_position = (end_x, end_y)
+        taken_spots.append((end_x, end_y))
+        unit3_future_position = (end_x, end_y)
 
-        for entry in self.decision:
+        for entry in decision:
             if entry["unitId"] == unit.id:
                 entry["movement"] = res
 
-    def unit_three_attack(self, unit):
-        res = self.recon(unit.id, future=True)
-        att = "UP"
+        return unit3_future_position
+
+    def unit_three_attack(self, unit, decision, u1f, u2f, u3f):
+        res = self.recon(unit.id, u1f, u2f, u3f, future=True)
+        att = "STAY"
         for key, item in res.items():
-            if item[0] > item[1]:
-                att = "STAY"
+            if item[1] > 0 and item[0] == 0:
+                att = key
+                break
+            elif item[2] > 0 and item[0] == 0:
+                att = key
                 break
 
-        for entry in self.decision:
+        for entry in decision:
             if entry["unitId"] == unit.id:
                 entry["attack"] = att
 
@@ -315,55 +324,40 @@ class Strategy(Game):
             directions = directions[:unit.speed]
         return directions
 
-    def get_target(self, unit):
-        min_distance = 10000000
-        min_enemy = None
+    def get_target(self):
+        ids = [2, 3, 1, 5, 6, 4]
         for enemy in self.get_enemy_units():
-            dist = ((enemy.pos.x - unit.pos.x) ** 2 + (enemy.pos.y - unit.pos.y) ** 2) ** 0.5
-            if dist < min_distance:
-                min_distance = dist
-                min_enemy = enemy
+            for eyedee in ids:
+                if enemy.id == eyedee:
+                    return enemy
 
-        return min_enemy
-
-    def recon(self, unit_id, future=False):
+    def recon(self, unit_id, unit1_future_position=0, unit2_future_position=0, unit3_future_position=0, future=False):
         report = {"UP": None, "DOWN": None, "LEFT": None, "RIGHT": None}
-        unfucker = {"UP": "DOWN", "DOWN": "UP", "LEFT": "LEFT", "RIGHT": "RIGHT"}
+        unfucker = {"UP": "DOWN", "DOWN": "UP", "LEFT": "LEFT", "RIGHT": "RIGHT", "STAY": "STAY"}
         for direction in report.keys():
             hit_locations = self.get_positions_of_attack_pattern(unit_id, direction)
             f, e, r = 0, 0, 0
             if future:
-                for pos in [self.unit1_future_position, self.unit2_future_position, self.unit3_future_position]:
+                for pos in [unit1_future_position, unit2_future_position, unit3_future_position]:
                     for loc in hit_locations:
                         if pos == (loc[0].x, loc[0].y):
                             f += 1
-
-                        new_location_with_shit = loc[0]
-                        if self.get_tile((new_location_with_shit.x,
-                                          new_location_with_shit.y)).type.lower() in "DESTRUCTIBLE".lower():
-                            r += 1
-
             else:
                 for unit in self.get_my_units():
-                    if unit.id not in ([1,2,3] if self.player_id == 1 else [4,5,6]):
+                    if unit.id == unit_id:
                         continue
                     for loc in hit_locations:
                         if self.check_same_position(unit.pos, loc[0]):
                             f += 1
-
-                for loc in hit_locations:
-                    new_location_with_shit = loc[0]
-                    if self.get_tile((new_location_with_shit.x,
-                                      new_location_with_shit.y)).type.lower() in "DESTRUCTIBLE".lower():
-                        r += 1
             for unit in self.get_enemy_units():
-                if unit.id in ([1, 2, 3] if self.player_id == 1 else [4, 5, 6]):
-                    continue
                 for loc in hit_locations:
                     if self.check_same_position(unit.pos, loc[0]):
                         e += 1
 
-
+            for loc in hit_locations:
+                new_location_with_shit = loc[0]
+                if self.get_tile((new_location_with_shit.x, new_location_with_shit.y)).type == "DESTRUCTIBLE":
+                    r += 1
 
             direction = unfucker[direction]
             report[direction] = [f, e, r]
@@ -395,14 +389,14 @@ class Strategy(Game):
     def clamp(self, number, mini, maxi):
         return min(maxi, max(mini, number))
 
-    def get_nearest_point(self, unit, position):
+    def get_nearest_point(self, unit, position, taken_spots):
         for n in range(12):
-            if self.path_to((unit.pos.x, unit.pos.y), (position.x+n, position.y), self.taken_spots) is not None:
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x+n, position.y), taken_spots) is not None:
                 return [position.x+n, position.y]
-            if self.path_to((unit.pos.x, unit.pos.y), (position.x-n, position.y), self.taken_spots) is not None:
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x-n, position.y), taken_spots) is not None:
                 return [position.x-n, position.y]
-            if self.path_to((unit.pos.x, unit.pos.y), (position.x, position.y+n), self.taken_spots) is not None:
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x, position.y+n), taken_spots) is not None:
                 return [position.x, position.y+n]
-            if self.path_to((unit.pos.x, unit.pos.y), (position.x, position.y-n), self.taken_spots) is not None:
+            if self.path_to((unit.pos.x, unit.pos.y), (position.x, position.y-n), taken_spots) is not None:
                 return [position.x, position.y-n]
         return None

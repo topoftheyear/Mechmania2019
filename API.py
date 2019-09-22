@@ -54,8 +54,8 @@ class Game:
         raise NotImplementedError(
             "Please Implement this method in a \"Strategy\" class")
 
-	# Implement this in the "Strategy" class if you want to do something specific
-	# when a game ends
+    # Implement this in the "Strategy" class if you want to do something specific
+    # when a game ends
     def game_over(self, result):
         pass
 
